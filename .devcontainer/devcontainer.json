@@ -1,0 +1,12 @@
+{
+  // Podgląd wersji przeglądarkowej w GitHub Codespaces: zależności instalują się same,
+  // a Expo web (port 8081, z proxy RSS pod /__cors-proxy) startuje przy każdym uruchomieniu codespace'a.
+  "name": "Telewizja Sudecka (web)",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "forwardPorts": [8081],
+  "portsAttributes": {
+    "8081": { "label": "Aplikacja (Expo web)", "onAutoForward": "openPreview" }
+  },
+  "postCreateCommand": "npm ci",
+  "postStartCommand": "bash .devcontainer/start-web.sh"
+}
