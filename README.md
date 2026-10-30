@@ -60,6 +60,11 @@ npx expo start --web
 
 Aplikacje na telefon pobierają dane bezpośrednio i proxy nie używają.
 
+**Bez instalowania czegokolwiek – GitHub Codespaces:** na GitHubie *Code → Codespaces → Create codespace*.
+Zależności instalują się same, a `expo start --web` rusza automatycznie (port 8081 w zakładce *Ports*).
+Proxy RSS działa wtedy pod adresem `/__cors-proxy` tego samego serwera (`metro.config.js`), więc nie trzeba
+otwierać ani upubliczniać dodatkowego portu. Log serwera: `/tmp/expo-web.log`.
+
 ## Reklamy i subskrypcja VIP
 
 - **Reklamy (Google AdMob):** baner co 6 artykułów i co 4 filmy, baner na dole ekranu artykułu i pod filmem.

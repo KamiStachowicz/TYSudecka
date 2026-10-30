@@ -34,9 +34,12 @@ const articleCache = new Map<string, Article>();
 
 // Serwer RSS nie wysyła nagłówków CORS, więc wersja przeglądarkowa w trybie deweloperskim
 // idzie przez lokalne proxy (scripts/cors-proxy.mjs). Aplikacje na telefon pobierają bezpośrednio.
+// W GitHub Codespaces adres proxy podaje zmienna EXPO_PUBLIC_CORS_PROXY_URL (ustawia ją .devcontainer).
+const CORS_PROXY_URL = process.env.EXPO_PUBLIC_CORS_PROXY_URL || 'http://localhost:8787';
+
 function withProxy(url: string) {
   if (Platform.OS === 'web' && __DEV__) {
-    return `http://localhost:8787/?url=${encodeURIComponent(url)}`;
+    return `${CORS_PROXY_URL.replace(/\/$/, '')}/?url=${encodeURIComponent(url)}`;
   }
   return url;
 }
