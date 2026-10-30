@@ -2,19 +2,31 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import { setAnalyticsEnabled, setAnalyticsProps, useScreenTracking } from '@/lib/analytics';
 import { AdsProvider } from '@/lib/monetization/ads';
-import { VipProvider } from '@/lib/monetization/vip';
+import { useVip, VipProvider } from '@/lib/monetization/vip';
 import { registerBackgroundRefresh, useOpenArticleFromNotification } from '@/lib/notifications';
 import { SavedProvider } from '@/lib/saved';
-import { SettingsProvider, useTheme } from '@/lib/settings';
+import { SettingsProvider, useSettings, useTheme } from '@/lib/settings';
 
 function AppStack() {
   const { c } = useTheme();
+  const { settings, loaded } = useSettings();
+  const { isVip } = useVip();
   useOpenArticleFromNotification();
+  useScreenTracking();
 
   useEffect(() => {
     registerBackgroundRefresh();
   }, []);
+
+  useEffect(() => {
+    if (loaded) setAnalyticsEnabled(settings.analytics);
+  }, [loaded, settings.analytics]);
+
+  useEffect(() => {
+    setAnalyticsProps({ vip: isVip });
+  }, [isVip]);
 
   return (
     <>

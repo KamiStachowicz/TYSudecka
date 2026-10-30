@@ -1,6 +1,7 @@
 import { FlatList, StyleSheet, Text } from 'react-native';
 
 import { SettingRow } from '@/components/SettingRow';
+import { track } from '@/lib/analytics';
 import { CATEGORY_GROUPS } from '@/lib/categories';
 import { useSettings, useStyles } from '@/lib/settings';
 import type { Palette } from '@/lib/theme';
@@ -31,7 +32,10 @@ export default function TownsScreen() {
             last={index === TOWNS.length - 1}
             label={item.name}
             trailing={on ? 'check' : 'none'}
-            onPress={() => toggleTown(item.id)}
+            onPress={() => {
+              if (!on) track('Miejscowość dodana', { miejscowosc: item.name });
+              toggleTown(item.id);
+            }}
           />
         );
       }}

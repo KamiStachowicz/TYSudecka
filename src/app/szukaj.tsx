@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, Pressable, StyleSheet, TextInput, View } f
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { EmptyView, ErrorView } from '@/components/StateViews';
+import { track } from '@/lib/analytics';
 import { type Article, searchArticles } from '@/lib/feeds';
 import { useStyles, useTheme } from '@/lib/settings';
 import type { Palette } from '@/lib/theme';
@@ -34,6 +35,7 @@ export default function SearchScreen() {
     try {
       const res = await searchArticles(trimmed, p);
       if (id !== requestId.current) return;
+      if (p === 1) track('Wyszukiwanie', { fraza: trimmed.toLowerCase(), wyniki: res.results.length });
       setResults((prev) =>
         p === 1 ? res.results : [...prev, ...res.results.filter((r) => !prev.some((x) => x.id === r.id))],
       );

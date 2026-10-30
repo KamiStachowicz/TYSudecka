@@ -17,6 +17,7 @@ import {
   View,
 } from 'react-native';
 
+import { track } from '@/lib/analytics';
 import { useStyles, useTheme } from '@/lib/settings';
 import { NEWSROOM_EMAIL, type Palette } from '@/lib/theme';
 
@@ -82,6 +83,7 @@ export default function SendTipScreen() {
           attachments: attachments.map((a) => a.uri),
         });
         if (res.status === MailComposer.MailComposerStatus.SENT) {
+          track('Info wysłane do redakcji', { miejscowosc: place.trim() || null, zalaczniki: attachments.length });
           notify('Dziękujemy!', 'Twoja informacja trafiła do redakcji Telewizji Sudeckiej.');
           router.back();
         }

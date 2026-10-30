@@ -51,7 +51,12 @@
       ],
       "expo-background-task",
       "expo-mail-composer",
-      ["expo-notifications", { "color": "#007434" }],
+      [
+        "expo-notifications",
+        {
+          "color": "#007434"
+        }
+      ],
       [
         "expo-image-picker",
         {
@@ -69,12 +74,21 @@
               "name": "LatestNewsWidget",
               "displayName": "Telewizja Sudecka",
               "description": "Najnowsze wiadomości z regionu",
-              "ios": { "supportedFamilies": ["systemMedium", "systemLarge"] },
-              "android": { "targetCellWidth": 4, "targetCellHeight": 2 }
+              "ios": {
+                "supportedFamilies": [
+                  "systemMedium",
+                  "systemLarge"
+                ]
+              },
+              "android": {
+                "targetCellWidth": 4,
+                "targetCellHeight": 2
+              }
             }
           ]
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

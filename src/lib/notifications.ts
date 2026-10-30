@@ -6,6 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 
+import { track } from './analytics';
 import { fetchArticles, fetchArticlesFrom } from './feeds';
 import { DEFAULT_SETTINGS, type Settings } from './settings';
 import { KEYS, readJson, writeJson } from './storage';
@@ -109,6 +110,7 @@ export function useOpenArticleFromNotification() {
   useEffect(() => {
     const id = response?.notification.request.content.data?.articleId;
     if (id && response.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER) {
+      track('Powiadomienie otwarte', { id: String(id) });
       router.push({ pathname: '/artykul/[id]', params: { id: String(id) } });
     }
   }, [response]);

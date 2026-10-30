@@ -13,6 +13,8 @@ export type Settings = {
   textSize: TextSize;
   favouriteTowns: number[];
   notify: NotifyMode;
+  // Anonimowe statystyki korzystania z aplikacji (PostHog).
+  analytics: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -20,6 +22,7 @@ export const DEFAULT_SETTINGS: Settings = {
   textSize: 'normal',
   favouriteTowns: [],
   notify: 'off',
+  analytics: true,
 };
 
 export const TEXT_SCALE: Record<TextSize, number> = { small: 0.9, normal: 1, large: 1.15, xlarge: 1.3 };

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { SectionTitle, SettingRow } from '@/components/SettingRow';
 import { useAds } from '@/lib/monetization/ads';
@@ -131,6 +131,26 @@ export default function SettingsScreen() {
       {privacyOptionsRequired && (
         <SettingRow last icon="shield-checkmark-outline" label="Prywatność reklam" onPress={showPrivacyOptions} />
       )}
+
+      <SectionTitle>Prywatność</SectionTitle>
+      <SettingRow
+        first
+        last
+        icon="stats-chart-outline"
+        label="Anonimowe statystyki"
+        onPress={() => update({ analytics: !settings.analytics })}
+        trailing={
+          <Switch
+            value={settings.analytics}
+            onValueChange={(v) => update({ analytics: v })}
+            trackColor={{ true: c.primary }}
+            accessibilityLabel="Anonimowe statystyki"
+          />
+        }
+      />
+      <Text style={styles.hint}>
+        Pomagają redakcji sprawdzić, które materiały są czytane. Nie zbieramy imienia, e-maila ani lokalizacji.
+      </Text>
 
       <Text style={[styles.version, { color: c.muted }]}>Telewizja Sudecka · wersja 1.0.0</Text>
     </ScrollView>

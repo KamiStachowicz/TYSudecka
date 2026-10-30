@@ -5,6 +5,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { type ComponentProps, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { track } from '@/lib/analytics';
 import { APPLE_EULA_URL, PRIVACY_URL, TERMS_URL } from '@/lib/monetization/config';
 import { useVip, type VipPlan } from '@/lib/monetization/vip';
 import { FREE_SAVED_LIMIT } from '@/lib/saved';
@@ -61,6 +62,7 @@ export default function VipScreen() {
     const result = await purchase(plan);
     setBusy(false);
     if (result === 'success') {
+      track('VIP kupiony', { plan: plan.period === 'year' ? 'roczny' : 'miesięczny' });
       Alert.alert('Dziękujemy!', 'Masz aktywne konto VIP. Reklamy zniknęły.');
       router.back();
     } else if (result === 'error') {

@@ -6,6 +6,7 @@ import { Alert, Platform, Pressable, Share, StyleSheet, View } from 'react-nativ
 import { AdBanner } from '@/components/AdBanner';
 import { HtmlView } from '@/components/HtmlView';
 import { ErrorView, Loading } from '@/components/StateViews';
+import { track } from '@/lib/analytics';
 import { type Article, getArticle } from '@/lib/feeds';
 import { articleHtml } from '@/lib/html';
 import { FREE_SAVED_LIMIT, useSaved } from '@/lib/saved';
@@ -41,12 +42,24 @@ export default function ArticleScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    if (article) track('Artykuł otwarty', { id: article.id, tytul: article.title, offline: !!saved.get(article.id) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [article?.id]);
+
   const html = useMemo(() => (article ? articleHtml(article, { c, scale: textScale }) : ''), [article, c, textScale]);
   const isSaved = article ? saved.isSaved(article.id) : false;
+
+  const onShare = () => {
+    if (!article) return;
+    track('Artykuł udostępniony', { id: article.id, tytul: article.title });
+    Share.share({ message: `${article.title}\n${article.link}`, url: article.link });
+  };
 
   const onSave = () => {
     if (!article) return;
     const result = saved.toggle(article);
+    if (result === 'saved') track('Artykuł zapisany', { id: article.id, tytul: article.title });
     if (result !== 'limit') return;
     const message = `Bez VIP można zapisać ${FREE_SAVED_LIMIT} artykułów. Usuń któryś z zapisanych albo przejdź na VIP.`;
     if (Platform.OS === 'web') {
@@ -72,10 +85,7 @@ export default function ArticleScreen() {
                     accessibilityLabel={isSaved ? 'Usuń z zapisanych' : 'Zapisz na później'}>
                     <Ionicons name={isSaved ? 'bookmark' : 'bookmark-outline'} size={22} color="#fff" />
                   </Pressable>
-                  <Pressable
-                    hitSlop={10}
-                    accessibilityLabel="Udostępnij"
-                    onPress={() => Share.share({ message: `${article.title}\n${article.link}`, url: article.link })}>
+                  <Pressable hitSlop={10} accessibilityLabel="Udostępnij" onPress={onShare}>
                     <Ionicons name="share-outline" size={22} color="#fff" />
                   </Pressable>
                 </View>

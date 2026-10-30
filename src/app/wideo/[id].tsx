@@ -1,11 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AdBanner } from '@/components/AdBanner';
 import { HtmlView } from '@/components/HtmlView';
+import { track } from '@/lib/analytics';
 import { youtubeHtml } from '@/lib/html';
 import { type Palette } from '@/lib/theme';
 import { useStyles, useTheme } from '@/lib/settings';
@@ -15,6 +16,11 @@ export default function VideoScreen() {
   const { c: colors } = useTheme();
   const { id, title } = useLocalSearchParams<{ id: string; title?: string }>();
   const html = useMemo(() => youtubeHtml(`https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=1`), [id]);
+
+  useEffect(() => {
+    track('Wideo odtworzone', { id, tytul: title ?? null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   return (
     <ScrollView style={styles.screen}>

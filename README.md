@@ -28,6 +28,8 @@ Pozostałe funkcje:
   i usługi push (np. Expo Push lub Firebase), czyli współpracy ze stacją.
 - **Widżet na ekran główny** (iOS i Android): najnowsze nagłówki, odświeżane przy otwarciu aplikacji i w tle.
 - **VIP:** bez reklam, zapisywanie bez limitu (bez VIP: 10 artykułów) i odznaka VIP.
+- **Statystyki dla właściciela (PostHog):** wejścia, instalacje, czytane artykuły, wideo, wyszukiwane frazy,
+  miejscowości, zakupy VIP. Użytkownik może je wyłączyć w Ustawieniach → Prywatność. Opis niżej.
 
 Artykuł otwiera się w aplikacji (zdjęcie, lead, pełna treść, „Zapisz” i „Udostępnij”). Aplikacja nie potrzebuje
 własnego serwera: wszystko pobiera z publicznych kanałów RSS i stron tvsudecka.pl oraz YouTube.
@@ -90,6 +92,39 @@ npx eas-cli@latest build --profile development --platform android
 4. **Polityka prywatności:** w sklepach trzeba podać politykę, która opisuje reklamy i subskrypcje.
    Domyślnie aplikacja linkuje do polityki ze strony tvsudecka.pl. Trzeba ją uzupełnić albo podać własną w `config.ts`.
 
+## Statystyki dla właściciela (PostHog)
+
+Aplikacja wysyła anonimowe zdarzenia do PostHog, a właściciel ogląda wykresy w panelu na posthog.com.
+Dopóki klucz jest pusty, nic nie jest wysyłane. Działa także w Expo Go, nie działa w przeglądarce.
+
+| Zdarzenie | Kiedy | Dane |
+|---|---|---|
+| `Application Installed` / `Application Opened` | instalacja, każde wejście do aplikacji | – |
+| `$screen` | każdy ekran (ścieżka, np. `/artykul/33050`) | – |
+| `Artykuł otwarty` | otwarcie artykułu | `id`, `tytul`, `offline` |
+| `Artykuł zapisany`, `Artykuł udostępniony` | zakładka, udostępnienie | `id`, `tytul` |
+| `Wideo odtworzone` | otwarcie filmu | `id`, `tytul` |
+| `Wyszukiwanie` | wyszukanie frazy | `fraza`, `wyniki` |
+| `Miejscowość dodana` | wybór ulubionej miejscowości | `miejscowosc` |
+| `Powiadomienie otwarte` | kliknięcie powiadomienia | `id` |
+| `Info wysłane do redakcji` | wysłanie zgłoszenia | `miejscowosc`, `zalaczniki` |
+| `VIP kupiony` | udany zakup subskrypcji | `plan` |
+
+Każde zdarzenie ma też cechę `vip` (true/false), więc można porównać użytkowników VIP z resztą.
+
+Uruchomienie:
+
+1. Załóż konto na https://posthog.com i wybierz region **EU** (dane w UE, zgodnie z RODO).
+2. **Project settings → Project API key** (`phc_…`) wpisz w `POSTHOG_API_KEY` w `src/lib/analytics.ts`.
+3. W **Project settings** włącz **Discard client IP data**, żeby nie zapisywać adresów IP.
+4. Właściciela dodaj w **Settings → Organization → Members → Invite**.
+5. Zrób dashboard z wykresami, np.: wejścia dziennie (`Application Opened`, unikalni użytkownicy),
+   najczęściej czytane artykuły (`Artykuł otwarty` w podziale na `tytul`), popularne miejscowości, wyszukiwane frazy,
+   zakupy VIP.
+6. Dopisz statystyki do polityki prywatności oraz do „App Privacy” (App Store) i „Data safety” (Google Play).
+
+Darmowy plan PostHog obejmuje 1 mln zdarzeń miesięcznie.
+
 ## Publikacja w App Store i Google Play
 
 Budowanie odbywa się w chmurze przez EAS, Mac nie jest potrzebny:
@@ -117,6 +152,7 @@ stacji, a najlepiej publikacja z jej konta deweloperskiego.
 - `src/lib/settings.tsx` – ustawienia użytkownika, motyw jasny/ciemny, rozmiar tekstu
 - `src/lib/saved.tsx` – zapisane artykuły (offline)
 - `src/lib/notifications.ts` – sprawdzanie nowych artykułów w tle i powiadomienia
+- `src/lib/analytics.ts` – statystyki PostHog (klucz, lista zdarzeń, odsłony ekranów)
 - `src/widgets/` – widżet na ekran główny (`.ios.tsx` SwiftUI, `.android.tsx` Jetpack Compose)
 - `src/app/vip.tsx`, `szukaj.tsx`, `ramowka.tsx`, `wyslij.tsx`, `ustawienia.tsx`, `miejscowosci.tsx` – ekrany
 - `scripts/make-icons.cjs` – generuje ikony z `assets/brand/tvs.jpg`
