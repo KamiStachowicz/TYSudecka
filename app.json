@@ -1,0 +1,83 @@
+{
+  "expo": {
+    "name": "Telewizja Sudecka",
+    "slug": "tvsudecka",
+    "scheme": "tvsudecka",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "pl.tvsudecka.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "pl.tvsudecka.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-image",
+      "expo-web-browser",
+      "expo-font",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
+          "delayAppMeasurementInit": true,
+          "userTrackingUsageDescription": "Ten identyfikator pozwala wyświetlać reklamy lepiej dopasowane do Ciebie. Dzięki reklamom Telewizja Sudecka może udostępniać treści za darmo."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
+          }
+        }
+      ],
+      "expo-background-task",
+      "expo-mail-composer",
+      ["expo-notifications", { "color": "#007434" }],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Aplikacja potrzebuje dostępu do zdjęć, żeby dołączyć je do informacji wysyłanej do redakcji.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-widgets",
+        {
+          "enableAndroid": true,
+          "widgets": [
+            {
+              "name": "LatestNewsWidget",
+              "displayName": "Telewizja Sudecka",
+              "description": "Najnowsze wiadomości z regionu",
+              "ios": { "supportedFamilies": ["systemMedium", "systemLarge"] },
+              "android": { "targetCellWidth": 4, "targetCellHeight": 2 }
+            }
+          ]
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
