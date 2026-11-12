@@ -64,6 +64,18 @@ npx expo start --web
 
 Aplikacje na telefon pobierają dane bezpośrednio i proxy nie używają.
 
+## Wersja w przeglądarce na Vercel (link do pokazania)
+
+Projekt jest gotowy do wdrożenia na https://vercel.com: `vercel.json` buduje wersję webową
+(`npx expo export --platform web`), a funkcja `api/proxy.ts` zastępuje lokalne proxy. Wpuszcza tylko adresy
+tvsudecka.pl i kanał YouTube, a odpowiedzi trzyma 2 minuty w cache, żeby nie obciążać serwera stacji.
+
+1. Zaloguj się na vercel.com przez GitHuba i kliknij **Add New → Project**.
+2. Wybierz repo `TYSudecka` i kliknij **Deploy**. Ustawienia budowania są w `vercel.json`, niczego nie trzeba wpisywać.
+3. Po 2–3 minutach dostajesz link `….vercel.app`. Każde scalenie do `main` aktualizuje go automatycznie.
+
+W przeglądarce nie ma reklam, powiadomień, widżetu ani statystyk. Do tego potrzebna jest aplikacja na telefon.
+
 ## Reklamy i subskrypcja VIP
 
 - **Reklamy (Google AdMob):** baner co 6 artykułów i co 4 filmy, baner na dole ekranu artykułu i pod filmem.
