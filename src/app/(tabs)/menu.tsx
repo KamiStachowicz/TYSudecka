@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import type { ComponentProps } from 'react';
+import { type ComponentProps, useState } from 'react';
 import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 
 import { SectionTitle, SettingRow } from '@/components/SettingRow';
@@ -20,18 +20,25 @@ const LINKS: { label: string; url: string; icon: IconName }[] = [
   { label: 'Strona tvsudecka.pl', url: SITE_URL, icon: 'globe-outline' },
 ];
 
+const COLLAPSIBLE = ['Sport', 'Miejscowości'];
+
 export default function MenuScreen() {
   const styles = useStyles(makeStyles);
   const { c } = useTheme();
   const { isVip } = useVip();
   const { settings } = useSettings();
   const towns = settings.favouriteTowns.length;
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  // Długie grupy są zwinięte, dopóki ktoś ich nie rozwinie.
+  const sections = CATEGORY_GROUPS.map((g) =>
+    COLLAPSIBLE.includes(g.title) && !open[g.title] ? { ...g, data: [] } : g,
+  );
 
   return (
     <SectionList
       style={styles.list}
       contentContainerStyle={styles.content}
-      sections={CATEGORY_GROUPS}
+      sections={sections}
       keyExtractor={(cat, i) => `${cat.id}-${i}`}
       stickySectionHeadersEnabled={false}
       ListHeaderComponent={
@@ -67,16 +74,42 @@ export default function MenuScreen() {
           <SettingRow icon="camera-outline" label="Wyślij info do redakcji" onPress={() => router.push('/wyslij')} />
           <SettingRow icon="search-outline" label="Szukaj artykułów" onPress={() => router.push('/szukaj')} />
           <SettingRow last icon="settings-outline" label="Ustawienia" onPress={() => router.push('/ustawienia')} />
+
+          <SectionTitle>Dla stacji</SectionTitle>
+          <SettingRow
+            first
+            last
+            icon="stats-chart-outline"
+            label="Panel właściciela"
+            onPress={() => router.push('/panel')}
+          />
         </View>
       }
-      renderSectionHeader={({ section }) => <SectionTitle>{section.title}</SectionTitle>}
+      renderSectionHeader={({ section }) => {
+        const all = CATEGORY_GROUPS.find((g) => g.title === section.title)?.data.length ?? 0;
+        if (!COLLAPSIBLE.includes(section.title)) return <SectionTitle>{section.title}</SectionTitle>;
+        const isOpen = !!open[section.title];
+        return (
+          <View style={styles.collapsible}>
+            <SettingRow
+              first
+              last={!isOpen}
+              icon={section.title === 'Sport' ? 'football-outline' : 'location-outline'}
+              label={section.title}
+              detail={String(all)}
+              trailing={<Ionicons name={isOpen ? 'chevron-up' : 'chevron-down'} size={18} color={c.muted} />}
+              onPress={() => setOpen((prev) => ({ ...prev, [section.title]: !isOpen }))}
+            />
+          </View>
+        );
+      }}
       renderItem={({ item, index, section }) => {
         const first = index === 0;
         // W sekcji "Sport" pierwsza pozycja to cały dział, więc nagłówek ekranu to "Sport".
         const title = section.title === 'Sport' && first ? 'Sport' : item.name;
         return (
           <SettingRow
-            first={first}
+            first={first && !COLLAPSIBLE.includes(section.title)}
             last={index === section.data.length - 1}
             label={item.name}
             onPress={() => router.push({ pathname: '/dzial/[id]', params: { id: item.id, name: title } })}
@@ -128,4 +161,5 @@ const makeStyles = (c: Palette) =>
     vipTitle: { color: '#fff', fontSize: 16, fontWeight: '800' },
     vipText: { color: 'rgba(255,255,255,0.85)', fontSize: 13, marginTop: 2 },
     note: { textAlign: 'center', fontSize: 12, marginTop: 20 },
+    collapsible: { marginTop: 18 },
   });

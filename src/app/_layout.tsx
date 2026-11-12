@@ -49,6 +49,7 @@ function AppStack() {
         <Stack.Screen name="wyslij" options={{ title: 'Wyślij info do redakcji' }} />
         <Stack.Screen name="ustawienia" options={{ title: 'Ustawienia' }} />
         <Stack.Screen name="miejscowosci" options={{ title: 'Moje miejscowości' }} />
+        <Stack.Screen name="panel" options={{ title: 'Panel właściciela' }} />
         <Stack.Screen name="vip" options={{ presentation: 'modal', title: 'TVS VIP' }} />
       </Stack>
     </>
