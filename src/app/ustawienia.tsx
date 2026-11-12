@@ -3,6 +3,7 @@ import { Alert, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View 
 
 import { SectionTitle, SettingRow } from '@/components/SettingRow';
 import { useAds } from '@/lib/monetization/ads';
+import { VIP_ENABLED } from '@/lib/monetization/config';
 import { useVip } from '@/lib/monetization/vip';
 import { enableNewsNotifications, notificationsSupported } from '@/lib/notifications';
 import {
@@ -117,17 +118,20 @@ export default function SettingsScreen() {
       <SectionTitle>Treści</SectionTitle>
       <SettingRow
         first
+        last={!VIP_ENABLED && !privacyOptionsRequired}
         icon="star-outline"
         label="Moje miejscowości"
         detail={settings.favouriteTowns.length ? String(settings.favouriteTowns.length) : 'brak'}
         onPress={() => router.push('/miejscowosci')}
       />
-      <SettingRow
-        last={!privacyOptionsRequired}
-        icon="star"
-        label={isVip ? 'VIP aktywne' : 'TVS VIP – bez reklam'}
-        onPress={() => router.push('/vip')}
-      />
+      {VIP_ENABLED && (
+        <SettingRow
+          last={!privacyOptionsRequired}
+          icon="star"
+          label={isVip ? 'VIP aktywne' : 'TVS VIP – bez reklam'}
+          onPress={() => router.push('/vip')}
+        />
+      )}
       {privacyOptionsRequired && (
         <SettingRow last icon="shield-checkmark-outline" label="Prywatność reklam" onPress={showPrivacyOptions} />
       )}

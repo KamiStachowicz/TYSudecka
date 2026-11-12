@@ -1,12 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { type ComponentProps, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { track } from '@/lib/analytics';
-import { APPLE_EULA_URL, PRIVACY_URL, TERMS_URL } from '@/lib/monetization/config';
+import { APPLE_EULA_URL, PRIVACY_URL, TERMS_URL, VIP_ENABLED } from '@/lib/monetization/config';
 import { useVip, type VipPlan } from '@/lib/monetization/vip';
 import { FREE_SAVED_LIMIT } from '@/lib/saved';
 import { type Palette } from '@/lib/theme';
@@ -43,6 +43,12 @@ const BENEFITS: { icon: IconName; title: string; text: string }[] = [
 const periodLabel = (p: VipPlan) => (p.period === 'year' ? '/ rok' : '/ miesiąc');
 
 export default function VipScreen() {
+  // Wyłączone VIP: stary link do tego ekranu (np. z powiadomienia) prowadzi na stronę główną.
+  if (!VIP_ENABLED) return <Redirect href="/" />;
+  return <VipOffer />;
+}
+
+function VipOffer() {
   const styles = useStyles(makeStyles);
   const { c: colors } = useTheme();
   const { ready, isVip, plans, storeAvailable, purchase, restore, manage } = useVip();

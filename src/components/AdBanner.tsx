@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useAds } from '@/lib/monetization/ads';
+import { VIP_ENABLED } from '@/lib/monetization/config';
 import { useStyles } from '@/lib/settings';
 import type { Palette } from '@/lib/theme';
 
@@ -23,9 +24,11 @@ export function AdBanner({ variant = 'inline' }: Props) {
     <View style={variant === 'inline' ? styles.inline : styles.anchored}>
       <View style={styles.labelRow}>
         <Text style={styles.label}>Reklama</Text>
-        <Pressable hitSlop={8} onPress={() => router.push('/vip')}>
-          <Text style={styles.remove}>Usuń reklamy</Text>
-        </Pressable>
+        {VIP_ENABLED && (
+          <Pressable hitSlop={8} onPress={() => router.push('/vip')}>
+            <Text style={styles.remove}>Usuń reklamy</Text>
+          </Pressable>
+        )}
       </View>
       <BannerAd
         unitId={bannerUnitId}

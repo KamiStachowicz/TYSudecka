@@ -6,6 +6,7 @@ import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
 
 import { SectionTitle, SettingRow } from '@/components/SettingRow';
 import { CATEGORY_GROUPS } from '@/lib/categories';
+import { VIP_ENABLED } from '@/lib/monetization/config';
 import { useVip } from '@/lib/monetization/vip';
 import { useSettings, useStyles, useTheme } from '@/lib/settings';
 import { CONTACT_URL, FACEBOOK_URL, type Palette, SITE_URL, YOUTUBE_CHANNEL_URL } from '@/lib/theme';
@@ -35,22 +36,24 @@ export default function MenuScreen() {
       stickySectionHeadersEnabled={false}
       ListHeaderComponent={
         <View>
-          <Pressable
-            style={({ pressed }) => [styles.vipCard, pressed && { opacity: 0.85 }]}
-            onPress={() => router.push('/vip')}>
-            <View style={styles.vipIcon}>
-              <Ionicons name="star" size={20} color="#16201a" />
-            </View>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.vipTitle}>{isVip ? 'Masz aktywne VIP' : 'TVS VIP – bez reklam'}</Text>
-              <Text style={styles.vipText}>
-                {isVip
-                  ? 'Dziękujemy za wsparcie lokalnej telewizji.'
-                  : 'Oglądaj bez reklam i wspieraj Telewizję Sudecką.'}
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#fff" />
-          </Pressable>
+          {VIP_ENABLED && (
+            <Pressable
+              style={({ pressed }) => [styles.vipCard, pressed && { opacity: 0.85 }]}
+              onPress={() => router.push('/vip')}>
+              <View style={styles.vipIcon}>
+                <Ionicons name="star" size={20} color="#16201a" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.vipTitle}>{isVip ? 'Masz aktywne VIP' : 'TVS VIP – bez reklam'}</Text>
+                <Text style={styles.vipText}>
+                  {isVip
+                    ? 'Dziękujemy za wsparcie lokalnej telewizji.'
+                    : 'Oglądaj bez reklam i wspieraj Telewizję Sudecką.'}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#fff" />
+            </Pressable>
+          )}
 
           <SectionTitle>Dla Ciebie</SectionTitle>
           <SettingRow

@@ -1,10 +1,11 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import type { Article } from './feeds';
+import { VIP_ENABLED } from './monetization/config';
 import { useVip } from './monetization/vip';
 import { KEYS, readJson, writeJson } from './storage';
 
-// Bez VIP można zapisać tyle artykułów; VIP nie ma limitu.
+// Bez VIP można zapisać tyle artykułów; VIP nie ma limitu. Gdy VIP jest wyłączone, limitu nie ma.
 export const FREE_SAVED_LIMIT = 10;
 
 type StoredArticle = Omit<Article, 'date'> & { date: string | null; savedAt: string };
@@ -51,7 +52,7 @@ export function SavedProvider({ children }: { children: ReactNode }) {
         remove(article.id);
         return 'removed' as const;
       }
-      if (!isVip && saved.length >= FREE_SAVED_LIMIT) return 'limit' as const;
+      if (VIP_ENABLED && !isVip && saved.length >= FREE_SAVED_LIMIT) return 'limit' as const;
       const next = [article, ...saved];
       setSaved(next);
       persist(next);

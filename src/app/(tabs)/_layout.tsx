@@ -4,6 +4,7 @@ import { router, Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
 import { type ColorValue, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { VIP_ENABLED } from '@/lib/monetization/config';
 import { useVip } from '@/lib/monetization/vip';
 import { useSaved } from '@/lib/saved';
 import { useTheme } from '@/lib/settings';
@@ -37,14 +38,16 @@ function HeaderButtons() {
       <Pressable onPress={() => router.push('/szukaj')} hitSlop={8} accessibilityLabel="Szukaj">
         <Ionicons name="search" size={22} color="#fff" />
       </Pressable>
-      <Pressable
-        onPress={() => router.push('/vip')}
-        hitSlop={8}
-        style={[styles.vip, isVip && styles.vipActive]}
-        accessibilityLabel={isVip ? 'Konto VIP aktywne' : 'Kup VIP bez reklam'}>
-        <Ionicons name={isVip ? 'star' : 'star-outline'} size={14} color={isVip ? palettes.light.text : '#fff'} />
-        <Text style={[styles.vipText, isVip && { color: palettes.light.text }]}>VIP</Text>
-      </Pressable>
+      {VIP_ENABLED && (
+        <Pressable
+          onPress={() => router.push('/vip')}
+          hitSlop={8}
+          style={[styles.vip, isVip && styles.vipActive]}
+          accessibilityLabel={isVip ? 'Konto VIP aktywne' : 'Kup VIP bez reklam'}>
+          <Ionicons name={isVip ? 'star' : 'star-outline'} size={14} color={isVip ? palettes.light.text : '#fff'} />
+          <Text style={[styles.vipText, isVip && { color: palettes.light.text }]}>VIP</Text>
+        </Pressable>
+      )}
     </View>
   );
 }

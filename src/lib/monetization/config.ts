@@ -14,6 +14,10 @@ export const ADS_EVERY_N_ARTICLES = 6;
 export const ADS_EVERY_N_VIDEOS = 4;
 
 // ─── Subskrypcja VIP (RevenueCat) ────────────────────────────────────────────────
+// Wyłączone: aplikacja nie pokazuje VIP, zapisywanie artykułów jest bez limitu, reklamy widzą wszyscy.
+// Żeby włączyć subskrypcję, zmień na true i uzupełnij klucze RevenueCat poniżej.
+export const VIP_ENABLED = false;
+
 // Publiczne klucze SDK z panelu RevenueCat (Project settings → API keys).
 export const REVENUECAT_API_KEYS = {
   ios: '', // appl_...

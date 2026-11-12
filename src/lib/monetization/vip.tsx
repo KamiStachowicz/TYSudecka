@@ -7,7 +7,7 @@ import Purchases, {
   type PurchasesPackage,
 } from 'react-native-purchases';
 
-import { REVENUECAT_API_KEYS, VIP_ENTITLEMENT } from './config';
+import { REVENUECAT_API_KEYS, VIP_ENABLED, VIP_ENTITLEMENT } from './config';
 
 export type VipPlan = {
   id: string;
@@ -47,11 +47,11 @@ export function VipProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [isVip, setIsVip] = useState(false);
   const [plans, setPlans] = useState<VipPlan[]>([]);
-  const storeAvailable = apiKey !== '';
+  const storeAvailable = VIP_ENABLED && apiKey !== '';
 
   useEffect(() => {
     if (!storeAvailable) {
-      setPlans(__DEV__ ? PREVIEW_PLANS : []);
+      setPlans(VIP_ENABLED && __DEV__ ? PREVIEW_PLANS : []);
       setReady(true);
       return;
     }

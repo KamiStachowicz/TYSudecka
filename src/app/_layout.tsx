@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 
 import { setAnalyticsEnabled, setAnalyticsProps, useScreenTracking } from '@/lib/analytics';
 import { AdsProvider } from '@/lib/monetization/ads';
+import { VIP_ENABLED } from '@/lib/monetization/config';
 import { useVip, VipProvider } from '@/lib/monetization/vip';
 import { registerBackgroundRefresh, useOpenArticleFromNotification } from '@/lib/notifications';
 import { SavedProvider } from '@/lib/saved';
@@ -25,7 +26,7 @@ function AppStack() {
   }, [loaded, settings.analytics]);
 
   useEffect(() => {
-    setAnalyticsProps({ vip: isVip });
+    if (VIP_ENABLED) setAnalyticsProps({ vip: isVip });
   }, [isVip]);
 
   return (

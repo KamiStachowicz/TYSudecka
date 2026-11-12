@@ -4,6 +4,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { EmptyView } from '@/components/StateViews';
+import { VIP_ENABLED } from '@/lib/monetization/config';
 import { useVip } from '@/lib/monetization/vip';
 import { FREE_SAVED_LIMIT, useSaved } from '@/lib/saved';
 import { useStyles, useTheme } from '@/lib/settings';
@@ -27,7 +28,7 @@ export default function SavedScreen() {
             <Ionicons name="cloud-offline-outline" size={16} color={c.muted} />
             <Text style={styles.infoText}>
               Zapisane artykuły przeczytasz też bez internetu.
-              {isVip ? '' : ` Bez VIP: ${saved.length}/${FREE_SAVED_LIMIT}.`}
+              {VIP_ENABLED && !isVip ? ` Bez VIP: ${saved.length}/${FREE_SAVED_LIMIT}.` : ''}
             </Text>
           </View>
         ) : undefined
@@ -54,7 +55,7 @@ export default function SavedScreen() {
         />
       }
       ListFooterComponent={
-        !isVip && saved.length >= FREE_SAVED_LIMIT ? (
+        VIP_ENABLED && !isVip && saved.length >= FREE_SAVED_LIMIT ? (
           <Pressable style={styles.vip} onPress={() => router.push('/vip')}>
             <Ionicons name="star" size={16} color={c.accent} />
             <Text style={styles.vipText}>Z VIP zapiszesz artykułów bez limitu</Text>

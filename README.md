@@ -27,7 +27,9 @@ Pozostałe funkcje:
   Dotknięcie powiadomienia otwiera artykuł. Natychmiastowe alerty „PILNE” wysyłane przez redakcję wymagają serwera
   i usługi push (np. Expo Push lub Firebase), czyli współpracy ze stacją.
 - **Widżet na ekran główny** (iOS i Android): najnowsze nagłówki, odświeżane przy otwarciu aplikacji i w tle.
-- **VIP:** bez reklam, zapisywanie bez limitu (bez VIP: 10 artykułów) i odznaka VIP.
+- **VIP (obecnie wyłączone):** bez reklam, zapisywanie bez limitu (bez VIP: 10 artykułów) i odznaka VIP.
+  Włącza się przez `VIP_ENABLED = true` w `src/lib/monetization/config.ts`. Gdy jest wyłączone, aplikacja nigdzie
+  nie pokazuje VIP, zapisywanie jest bez limitu, a reklamy widzą wszyscy.
 - **Statystyki dla właściciela (PostHog):** wejścia, instalacje, czytane artykuły, wideo, wyszukiwane frazy,
   miejscowości, zakupy VIP. Użytkownik może je wyłączyć w Ustawieniach → Prywatność. Opis niżej.
 
