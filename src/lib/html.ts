@@ -2,21 +2,12 @@ import { Platform } from 'react-native';
 
 import { type Article, formatDate } from './feeds';
 import type { Palette } from './theme';
+import { EMBED, youtubeIdFromUrl } from './video';
 
 const escape = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 type Options = { c: Palette; scale: number };
-
-// Identyfikator filmu z adresów youtu.be/…, youtube.com/watch?v=…, /embed/…, /shorts/… i /live/….
-const YOUTUBE_ID =
-  /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^"'\s>]*?&(?:amp;)?)?v=|embed\/|shorts\/|live\/))([\w-]{11})/;
-
-// Redakcja wstawia wideo przez edytor jako <figure class="media"><oembed url="https://youtu.be/…"></oembed></figure>.
-// Przeglądarka nie wyświetla znacznika <oembed>, więc zamieniamy go na odtwarzacz YouTube.
-// Ten sam wzorzec łapie też gotowe <iframe> z YouTube.
-const EMBED =
-  /(?:<figure\b[^>]*>\s*)?(?:<oembed\b[^>]*\burl="([^"]+)"[^>]*>\s*<\/oembed>|<iframe\b[^>]*\bsrc="([^"]*youtu[^"]*)"[^>]*>\s*<\/iframe>)(?:\s*<\/figure>)?/gi;
 
 function youtubePlayer(id: string, className: string, autoplay: boolean) {
   let params = 'playsinline=1&rel=0';
@@ -33,7 +24,7 @@ export function extractVideos(html: string) {
   let leadVideo: string | null = null;
   const content = html.replace(EMBED, (match, oembedUrl?: string, iframeSrc?: string) => {
     const url = (oembedUrl ?? iframeSrc ?? '').replace(/&amp;/g, '&');
-    const id = url.match(YOUTUBE_ID)?.[1];
+    const id = youtubeIdFromUrl(url);
     if (!id) return oembedUrl ? `<p><a href="${escape(url)}">${escape(url)}</a></p>` : match;
     if (!leadVideo) {
       leadVideo = id;
@@ -90,6 +81,14 @@ ${
   <a class="source" href="${escape(a.link)}">Zobacz na tvsudecka.pl</a>
 </div>
 </body></html>`;
+}
+
+// Podgląd na liście artykułów: wyciszony, bez przycisków, w pętli. Dotknięcie kafelka otwiera artykuł z dźwiękiem.
+export function youtubePreviewHtml(id: string) {
+  return youtubeHtml(
+    `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}` +
+      '&modestbranding=1&disablekb=1&fs=0&iv_load_policy=3',
+  );
 }
 
 export function youtubeHtml(embedUrl: string) {
