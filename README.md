@@ -60,6 +60,15 @@ npx expo start --web
 
 Aplikacje na telefon pobierają dane bezpośrednio i proxy nie używają.
 
+## Wersja web na Vercel
+
+Repo jest gotowe do importu w Vercel (https://vercel.com/new): ustawienia są w `vercel.json`
+(build `npx expo export --platform web`, katalog `dist`, przekierowanie wszystkich ścieżek na `index.html`).
+W wersji produkcyjnej przeglądarka pobiera kanały RSS przez funkcję `api/proxy.js` na tej samej domenie.
+Funkcja przepuszcza tylko adresy `www.tvsudecka.pl` i kanał RSS YouTube, a odpowiedzi trzyma 2 minuty w cache Vercela.
+
+W przeglądarce nie ma reklam, zakupów VIP, powiadomień ani widżetu, tak jak w podglądzie `npx expo start --web`.
+
 ## Reklamy i subskrypcja VIP
 
 - **Reklamy (Google AdMob):** baner co 6 artykułów i co 4 filmy, baner na dole ekranu artykułu i pod filmem.
