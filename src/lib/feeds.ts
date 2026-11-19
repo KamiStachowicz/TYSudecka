@@ -32,13 +32,13 @@ const parser = new XMLParser({
 // Artykuły pobrane z dowolnego kanału, żeby ekran artykułu nie musiał pobierać ich ponownie.
 const articleCache = new Map<string, Article>();
 
-// Serwer RSS nie wysyła nagłówków CORS, więc wersja przeglądarkowa w trybie deweloperskim
-// idzie przez lokalne proxy (scripts/cors-proxy.mjs). Aplikacje na telefon pobierają bezpośrednio.
+// Serwer RSS nie wysyła nagłówków CORS, więc wersja przeglądarkowa idzie przez proxy:
+// w trybie deweloperskim lokalne (scripts/cors-proxy.mjs), na Vercel funkcja api/proxy.js.
+// Aplikacje na telefon pobierają bezpośrednio.
 function withProxy(url: string) {
-  if (Platform.OS === 'web' && __DEV__) {
-    return `http://localhost:8787/?url=${encodeURIComponent(url)}`;
-  }
-  return url;
+  if (Platform.OS !== 'web') return url;
+  const proxy = __DEV__ ? 'http://localhost:8787/' : '/api/proxy';
+  return `${proxy}?url=${encodeURIComponent(url)}`;
 }
 
 async function fetchText(url: string, accept = 'text/html') {
