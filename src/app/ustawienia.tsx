@@ -6,6 +6,7 @@ import { useAds } from '@/lib/monetization/ads';
 import { useVip } from '@/lib/monetization/vip';
 import { enableNewsNotifications, notificationsSupported } from '@/lib/notifications';
 import {
+  type ListVideoMode,
   type NotifyMode,
   type TextSize,
   type ThemeMode,
@@ -33,6 +34,11 @@ const NOTIFY: { value: NotifyMode; label: string }[] = [
   { value: 'off', label: 'Wyłączone' },
   { value: 'mine', label: 'Z moich miejscowości' },
   { value: 'all', label: 'Wszystkie nowe wiadomości' },
+];
+
+const LIST_VIDEO: { value: ListVideoMode; label: string }[] = [
+  { value: 'auto', label: 'Odtwarzaj same, bez dźwięku' },
+  { value: 'off', label: 'Pokazuj tylko zdjęcie' },
 ];
 
 function message(title: string, text: string) {
@@ -112,6 +118,12 @@ export default function SettingsScreen() {
       {options(NOTIFY, settings.notify, setNotify)}
       <Text style={styles.hint}>
         Aplikacja sprawdza nowe artykuły co około pół godziny. Telefon może robić to rzadziej, żeby oszczędzać baterię.
+      </Text>
+
+      <SectionTitle>Filmy na liście artykułów</SectionTitle>
+      {options(LIST_VIDEO, settings.listVideo, (v) => update({ listVideo: v }))}
+      <Text style={styles.hint}>
+        Film odtwarza się w artykule, który widać na ekranie. Wyłącz, jeśli chcesz oszczędzać internet w telefonie.
       </Text>
 
       <SectionTitle>Treści</SectionTitle>

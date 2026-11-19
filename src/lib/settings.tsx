@@ -7,12 +7,15 @@ import { type Palette, palettes } from './theme';
 export type ThemeMode = 'system' | 'light' | 'dark';
 export type TextSize = 'small' | 'normal' | 'large' | 'xlarge';
 export type NotifyMode = 'off' | 'mine' | 'all';
+// Czy filmy na liście artykułów odtwarzają się same (wyciszone).
+export type ListVideoMode = 'auto' | 'off';
 
 export type Settings = {
   themeMode: ThemeMode;
   textSize: TextSize;
   favouriteTowns: number[];
   notify: NotifyMode;
+  listVideo: ListVideoMode;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -20,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   textSize: 'normal',
   favouriteTowns: [],
   notify: 'off',
+  listVideo: 'auto',
 };
 
 export const TEXT_SCALE: Record<TextSize, number> = { small: 0.9, normal: 1, large: 1.15, xlarge: 1.3 };

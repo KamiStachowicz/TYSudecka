@@ -1,15 +1,17 @@
+import { useIsFocused } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import type { ReactElement } from 'react';
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text } from 'react-native';
+import { type ReactElement, useRef, useState } from 'react';
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, type ListViewToken } from 'react-native';
 
 import { AdBanner } from './AdBanner';
 import { ArticleCard } from './ArticleCard';
 import { EmptyView, ErrorView, Loading } from './StateViews';
 import { type Article, fetchArticles, fetchArticlesFrom } from '@/lib/feeds';
 import { ADS_EVERY_N_ARTICLES } from '@/lib/monetization/config';
-import { useStyles, useTheme } from '@/lib/settings';
+import { useSettings, useStyles, useTheme } from '@/lib/settings';
 import { type Palette, SITE_URL } from '@/lib/theme';
 import { useFeed } from '@/lib/useFeed';
+import { articleVideo } from '@/lib/video';
 
 type Props = {
   // Jeden dział, kilka działów (np. ulubione miejscowości) albo wszystkie najnowsze.
@@ -28,6 +30,18 @@ export function ArticleList({ source, header, onLoaded }: Props) {
     return list;
   }, [key]);
 
+  // Na raz gra tylko jeden film: pierwszy artykuł z wideo, który widać na ekranie prawie w całości.
+  // Gdy użytkownik przejdzie do innej zakładki albo otworzy artykuł, podgląd się zatrzymuje.
+  const { settings } = useSettings();
+  const focused = useIsFocused();
+  const [visibleVideoId, setVisibleVideoId] = useState<string | null>(null);
+  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ListViewToken[] }) => {
+    const first = viewableItems.find((v) => v.isViewable && v.item && articleVideo(v.item as Article));
+    setVisibleVideoId(first?.item?.id ?? null);
+  }).current;
+  const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 70, minimumViewTime: 250 }).current;
+  const playingId = settings.listVideo === 'auto' && focused ? visibleVideoId : null;
+
   const moreUrl = typeof source === 'number' ? `${SITE_URL}/artykuly/${source}` : `${SITE_URL}/artykuly`;
 
   return (
@@ -36,9 +50,12 @@ export function ArticleList({ source, header, onLoaded }: Props) {
       contentContainerStyle={styles.content}
       data={loading || error ? [] : items}
       keyExtractor={(a) => a.id}
+      extraData={playingId}
+      onViewableItemsChanged={onViewableItemsChanged}
+      viewabilityConfig={viewabilityConfig}
       renderItem={({ item, index }) => (
         <>
-          <ArticleCard article={item} featured={index === 0} />
+          <ArticleCard article={item} featured={index === 0} playing={item.id === playingId} />
           {(index + 1) % ADS_EVERY_N_ARTICLES === 0 && index < items.length - 1 && <AdBanner />}
         </>
       )}
