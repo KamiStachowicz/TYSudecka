@@ -99,6 +99,17 @@ npx eas-cli@latest build --profile development --platform android
 4. **Polityka prywatności:** w sklepach trzeba podać politykę, która opisuje reklamy i subskrypcje.
    Domyślnie aplikacja linkuje do polityki ze strony tvsudecka.pl. Trzeba ją uzupełnić albo podać własną w `config.ts`.
 
+## Wersja do testów na telefonach (bez sklepów)
+
+Android: plik APK do zainstalowania na dowolnym telefonie, link i kod QR pojawiają się po buildzie na expo.dev.
+
+```bash
+npx eas-cli@latest build --platform android --profile preview
+```
+
+Na telefonie trzeba zezwolić na instalację z nieznanych źródeł. iPhone bez sklepu wymaga płatnego konta Apple Developer
+(TestFlight albo instalacja na zarejestrowane urządzenia). Do tego czasu iPhone'y testują przez Expo Go.
+
 ## Publikacja w App Store i Google Play
 
 Budowanie odbywa się w chmurze przez EAS, Mac nie jest potrzebny:
