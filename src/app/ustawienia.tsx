@@ -2,8 +2,6 @@ import { router } from 'expo-router';
 import { Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { SectionTitle, SettingRow } from '@/components/SettingRow';
-import { useAds } from '@/lib/monetization/ads';
-import { useVip } from '@/lib/monetization/vip';
 import { enableNewsNotifications, notificationsSupported } from '@/lib/notifications';
 import {
   type ListVideoMode,
@@ -50,8 +48,6 @@ export default function SettingsScreen() {
   const styles = useStyles(makeStyles);
   const { c } = useTheme();
   const { settings, update } = useSettings();
-  const { isVip } = useVip();
-  const { privacyOptionsRequired, showPrivacyOptions } = useAds();
 
   const setNotify = async (mode: NotifyMode) => {
     if (mode === 'mine' && !settings.favouriteTowns.length) {
@@ -129,20 +125,12 @@ export default function SettingsScreen() {
       <SectionTitle>Treści</SectionTitle>
       <SettingRow
         first
+        last
         icon="star-outline"
         label="Moje miejscowości"
         detail={settings.favouriteTowns.length ? String(settings.favouriteTowns.length) : 'brak'}
         onPress={() => router.push('/miejscowosci')}
       />
-      <SettingRow
-        last={!privacyOptionsRequired}
-        icon="star"
-        label={isVip ? 'VIP aktywne' : 'TVS VIP – bez reklam'}
-        onPress={() => router.push('/vip')}
-      />
-      {privacyOptionsRequired && (
-        <SettingRow last icon="shield-checkmark-outline" label="Prywatność reklam" onPress={showPrivacyOptions} />
-      )}
 
       <Text style={[styles.version, { color: c.muted }]}>Telewizja Sudecka · wersja 1.0.0</Text>
     </ScrollView>

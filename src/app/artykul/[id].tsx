@@ -1,14 +1,13 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Platform, Pressable, Share, StyleSheet, View } from 'react-native';
+import { Pressable, Share, StyleSheet, View } from 'react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { HtmlView } from '@/components/HtmlView';
 import { ErrorView, Loading } from '@/components/StateViews';
 import { type Article, getArticle } from '@/lib/feeds';
 import { articleHtml } from '@/lib/html';
-import { FREE_SAVED_LIMIT, useSaved } from '@/lib/saved';
+import { useSaved } from '@/lib/saved';
 import { useTheme } from '@/lib/settings';
 
 export default function ArticleScreen() {
@@ -45,18 +44,7 @@ export default function ArticleScreen() {
   const isSaved = article ? saved.isSaved(article.id) : false;
 
   const onSave = () => {
-    if (!article) return;
-    const result = saved.toggle(article);
-    if (result !== 'limit') return;
-    const message = `Bez VIP można zapisać ${FREE_SAVED_LIMIT} artykułów. Usuń któryś z zapisanych albo przejdź na VIP.`;
-    if (Platform.OS === 'web') {
-      router.push('/vip');
-      return;
-    }
-    Alert.alert('Limit zapisanych', message, [
-      { text: 'Anuluj', style: 'cancel' },
-      { text: 'VIP bez limitu', onPress: () => router.push('/vip') },
-    ]);
+    if (article) saved.toggle(article);
   };
 
   return (
@@ -90,7 +78,6 @@ export default function ArticleScreen() {
       {status === 'ready' && (
         <View style={{ flex: 1, backgroundColor: c.card }}>
           <HtmlView html={html} />
-          <AdBanner variant="anchored" />
         </View>
       )}
     </>

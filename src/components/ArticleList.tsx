@@ -3,11 +3,9 @@ import * as WebBrowser from 'expo-web-browser';
 import { type ReactElement, useRef, useState } from 'react';
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, type ListViewToken } from 'react-native';
 
-import { AdBanner } from './AdBanner';
 import { ArticleCard } from './ArticleCard';
 import { EmptyView, ErrorView, Loading } from './StateViews';
 import { type Article, fetchArticles, fetchArticlesFrom } from '@/lib/feeds';
-import { ADS_EVERY_N_ARTICLES } from '@/lib/monetization/config';
 import { useSettings, useStyles, useTheme } from '@/lib/settings';
 import { type Palette, SITE_URL } from '@/lib/theme';
 import { useFeed } from '@/lib/useFeed';
@@ -56,7 +54,6 @@ export function ArticleList({ source, header, onLoaded }: Props) {
       renderItem={({ item, index }) => (
         <>
           <ArticleCard article={item} featured={index === 0} playing={item.id === playingId} />
-          {(index + 1) % ADS_EVERY_N_ARTICLES === 0 && index < items.length - 1 && <AdBanner />}
         </>
       )}
       ListHeaderComponent={header}

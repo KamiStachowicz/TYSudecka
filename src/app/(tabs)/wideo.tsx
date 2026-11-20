@@ -4,10 +4,8 @@ import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { FlatList, Pressable, RefreshControl, StyleSheet, Text, View } from 'react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { ErrorView, Loading } from '@/components/StateViews';
 import { fetchVideos, formatDate } from '@/lib/feeds';
-import { ADS_EVERY_N_VIDEOS } from '@/lib/monetization/config';
 import { type Palette, YOUTUBE_CHANNEL_URL } from '@/lib/theme';
 import { useStyles, useTheme } from '@/lib/settings';
 import { useFeed } from '@/lib/useFeed';
@@ -41,7 +39,6 @@ export default function VideosScreen() {
               <Text style={styles.date}>{formatDate(item.date)}</Text>
             </View>
           </Pressable>
-          {(index + 1) % ADS_EVERY_N_VIDEOS === 0 && index < items.length - 1 && <AdBanner />}
         </>
       )}
       ListEmptyComponent={loading ? <Loading /> : error ? <ErrorView message={error} onRetry={retry} /> : undefined}

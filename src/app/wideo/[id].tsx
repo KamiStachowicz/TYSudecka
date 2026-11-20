@@ -4,7 +4,6 @@ import * as WebBrowser from 'expo-web-browser';
 import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { AdBanner } from '@/components/AdBanner';
 import { HtmlView } from '@/components/HtmlView';
 import { youtubeHtml } from '@/lib/html';
 import { type Palette } from '@/lib/theme';
@@ -30,7 +29,6 @@ export default function VideoScreen() {
           <Text style={styles.buttonText}>Otwórz w YouTube</Text>
         </Pressable>
       </View>
-      <AdBanner />
     </ScrollView>
   );
 }
