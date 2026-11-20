@@ -32,26 +32,14 @@
       "expo-image",
       "expo-web-browser",
       "expo-font",
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
-          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
-          "delayAppMeasurementInit": true,
-          "userTrackingUsageDescription": "Ten identyfikator pozwala wyświetlać reklamy lepiej dopasowane do Ciebie. Dzięki reklamom Telewizja Sudecka może udostępniać treści za darmo."
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
-          }
-        }
-      ],
       "expo-background-task",
       "expo-mail-composer",
-      ["expo-notifications", { "color": "#007434" }],
+      [
+        "expo-notifications",
+        {
+          "color": "#007434"
+        }
+      ],
       [
         "expo-image-picker",
         {
@@ -69,8 +57,16 @@
               "name": "LatestNewsWidget",
               "displayName": "Telewizja Sudecka",
               "description": "Najnowsze wiadomości z regionu",
-              "ios": { "supportedFamilies": ["systemMedium", "systemLarge"] },
-              "android": { "targetCellWidth": 4, "targetCellHeight": 2 }
+              "ios": {
+                "supportedFamilies": [
+                  "systemMedium",
+                  "systemLarge"
+                ]
+              },
+              "android": {
+                "targetCellWidth": 4,
+                "targetCellHeight": 2
+              }
             }
           ]
         }

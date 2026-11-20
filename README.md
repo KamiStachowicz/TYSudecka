@@ -27,13 +27,14 @@ Pozostałe funkcje:
   Dotknięcie powiadomienia otwiera artykuł. Natychmiastowe alerty „PILNE” wysyłane przez redakcję wymagają serwera
   i usługi push (np. Expo Push lub Firebase), czyli współpracy ze stacją.
 - **Widżet na ekran główny** (iOS i Android): najnowsze nagłówki, odświeżane przy otwarciu aplikacji i w tle.
-- **VIP:** bez reklam, zapisywanie bez limitu (bez VIP: 10 artykułów) i odznaka VIP.
 
 Artykuł otwiera się w aplikacji (zdjęcie, lead, pełna treść, „Zapisz” i „Udostępnij”). Aplikacja nie potrzebuje
 własnego serwera: wszystko pobiera z publicznych kanałów RSS i stron tvsudecka.pl oraz YouTube.
 
-**Co działa w Expo Go, a co dopiero w wersji testowej (EAS):** w Expo Go działa wszystko poza reklamami,
-zakupami VIP, powiadomieniami w tle i widżetem. Te cztery rzeczy wymagają `eas build --profile development`.
+Aplikacja nie ma reklam ani płatnych funkcji.
+
+**Co działa w Expo Go, a co dopiero w wersji testowej (EAS):** w Expo Go działa wszystko poza powiadomieniami w tle
+i widżetem. Te dwie rzeczy wymagają `eas build --profile development`.
 
 ## Uruchomienie na telefonie (bez Maca i bez Android Studio)
 
@@ -67,37 +68,23 @@ Repo jest gotowe do importu w Vercel (https://vercel.com/new): ustawienia są w 
 W wersji produkcyjnej przeglądarka pobiera kanały RSS przez funkcję `api/proxy.js` na tej samej domenie.
 Funkcja przepuszcza tylko adresy `www.tvsudecka.pl` i kanał RSS YouTube, a odpowiedzi trzyma 2 minuty w cache Vercela.
 
-W przeglądarce nie ma reklam, zakupów VIP, powiadomień ani widżetu, tak jak w podglądzie `npx expo start --web`.
+W przeglądarce nie ma powiadomień ani widżetu, tak jak w podglądzie `npx expo start --web`.
 
-## Reklamy i subskrypcja VIP
+## Polityka prywatności
 
-- **Reklamy (Google AdMob):** baner co 6 artykułów i co 4 filmy, baner na dole ekranu artykułu i pod filmem.
-  Przy pierwszym uruchomieniu pokazuje się okno zgody RODO (Google UMP), a na iPhonie także pytanie Apple o śledzenie.
-  W zakładce Działy pojawia się „Ustawienia prywatności reklam”, jeśli Google tego wymaga.
-- **VIP (RevenueCat):** subskrypcja miesięczna i roczna usuwa wszystkie reklamy. Przycisk „VIP” jest w nagłówku,
-  karta w zakładce Działy, a przy każdej reklamie link „Usuń reklamy”. Jest też „Przywróć zakupy” i „Zarządzaj subskrypcją”.
-  Subskrybentom VIP nie pokazujemy nawet okna zgody na reklamy.
+Sklepy wymagają linku do polityki prywatności. Aplikacja nie wyświetla reklam i nie zbiera danych osobowych;
+zgłoszenia do redakcji idą e-mailem z poczty użytkownika. Polityka ze strony tvsudecka.pl powinna to opisywać.
 
-Wszystkie ustawienia są w `src/lib/monetization/config.ts` (identyfikatory reklam, klucze RevenueCat, linki do regulaminu).
+## Wersja do testów na telefonach (bez sklepów)
 
-### Jak to uruchomić naprawdę
-
-Reklamy i zakupy mają kod natywny, więc **nie działają w Expo Go ani w przeglądarce**. W Expo Go aplikacja
-działa dalej, tylko bez reklam. W trybie deweloperskim bez skonfigurowanego sklepu ekran VIP symuluje zakup.
-Do testów potrzebna jest własna wersja testowa (development build):
+Android: plik APK do zainstalowania na dowolnym telefonie, link i kod QR pojawiają się po buildzie na expo.dev.
 
 ```bash
-npx eas-cli@latest build --profile development --platform android
+npx eas-cli@latest build --platform android --profile preview
 ```
 
-1. **AdMob** (https://admob.google.com): dodaj aplikację na iOS i Androida. Identyfikatory aplikacji (`ca-app-pub-…~…`)
-   wpisz w `app.json` (teraz są tam testowe identyfikatory Google), a identyfikatory jednostek banerowych (`ca-app-pub-…/…`)
-   w `AD_UNIT_IDS` w `config.ts`. W „Prywatność i wiadomości” włącz komunikat RODO (EOG) i komunikat IDFA (iOS).
-2. **Produkty w sklepach:** w App Store Connect i Google Play Console utwórz subskrypcje, np. `vip_monthly` i `vip_yearly`.
-3. **RevenueCat** (https://app.revenuecat.com): podłącz oba sklepy, dodaj produkty, utwórz entitlement `vip`
-   i ofertę (Offering) z pakietami Monthly i Annual. Publiczne klucze SDK (`appl_…`, `goog_…`) wpisz w `REVENUECAT_API_KEYS`.
-4. **Polityka prywatności:** w sklepach trzeba podać politykę, która opisuje reklamy i subskrypcje.
-   Domyślnie aplikacja linkuje do polityki ze strony tvsudecka.pl. Trzeba ją uzupełnić albo podać własną w `config.ts`.
+Na telefonie trzeba zezwolić na instalację z nieznanych źródeł. iPhone bez sklepu wymaga płatnego konta Apple Developer
+(TestFlight albo instalacja na zarejestrowane urządzenia). Do tego czasu iPhone'y testują przez Expo Go.
 
 ## Publikacja w App Store i Google Play
 
@@ -122,10 +109,9 @@ stacji, a najlepiej publikacja z jej konta deweloperskiego.
 - `src/lib/feeds.ts` – pobieranie i parsowanie RSS
 - `src/lib/categories.ts` – lista działów i miejscowości (ID z menu strony)
 - `src/lib/html.ts` – szablon HTML artykułu i odtwarzacza YouTube
-- `src/lib/monetization/` – reklamy (`ads.tsx`), subskrypcja VIP (`vip.tsx`), ustawienia (`config.ts`)
 - `src/lib/settings.tsx` – ustawienia użytkownika, motyw jasny/ciemny, rozmiar tekstu
 - `src/lib/saved.tsx` – zapisane artykuły (offline)
 - `src/lib/notifications.ts` – sprawdzanie nowych artykułów w tle i powiadomienia
 - `src/widgets/` – widżet na ekran główny (`.ios.tsx` SwiftUI, `.android.tsx` Jetpack Compose)
-- `src/app/vip.tsx`, `szukaj.tsx`, `ramowka.tsx`, `wyslij.tsx`, `ustawienia.tsx`, `miejscowosci.tsx` – ekrany
+- `src/app/szukaj.tsx`, `ramowka.tsx`, `wyslij.tsx`, `ustawienia.tsx`, `miejscowosci.tsx` – ekrany
 - `scripts/make-icons.cjs` – generuje ikony z `assets/brand/tvs.jpg`

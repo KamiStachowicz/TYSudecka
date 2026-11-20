@@ -2,8 +2,6 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
-import { AdsProvider } from '@/lib/monetization/ads';
-import { VipProvider } from '@/lib/monetization/vip';
 import { registerBackgroundRefresh, useOpenArticleFromNotification } from '@/lib/notifications';
 import { SavedProvider } from '@/lib/saved';
 import { SettingsProvider, useTheme } from '@/lib/settings';
@@ -36,7 +34,6 @@ function AppStack() {
         <Stack.Screen name="wyslij" options={{ title: 'Wyślij info do redakcji' }} />
         <Stack.Screen name="ustawienia" options={{ title: 'Ustawienia' }} />
         <Stack.Screen name="miejscowosci" options={{ title: 'Moje miejscowości' }} />
-        <Stack.Screen name="vip" options={{ presentation: 'modal', title: 'TVS VIP' }} />
       </Stack>
     </>
   );
@@ -45,13 +42,9 @@ function AppStack() {
 export default function RootLayout() {
   return (
     <SettingsProvider>
-      <VipProvider>
-        <SavedProvider>
-          <AdsProvider>
-            <AppStack />
-          </AdsProvider>
-        </SavedProvider>
-      </VipProvider>
+      <SavedProvider>
+        <AppStack />
+      </SavedProvider>
     </SettingsProvider>
   );
 }

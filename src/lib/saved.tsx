@@ -1,11 +1,7 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import type { Article } from './feeds';
-import { useVip } from './monetization/vip';
 import { KEYS, readJson, writeJson } from './storage';
-
-// Bez VIP można zapisać tyle artykułów; VIP nie ma limitu.
-export const FREE_SAVED_LIMIT = 10;
 
 type StoredArticle = Omit<Article, 'date'> & { date: string | null; savedAt: string };
 
@@ -13,7 +9,7 @@ type SavedState = {
   saved: Article[];
   isSaved: (id: string) => boolean;
   get: (id: string) => Article | undefined;
-  toggle: (article: Article) => 'saved' | 'removed' | 'limit';
+  toggle: (article: Article) => 'saved' | 'removed';
   remove: (id: string) => void;
 };
 
@@ -28,7 +24,6 @@ const toStored = (a: Article): StoredArticle => ({
 
 // Zapisujemy cały artykuł (z treścią), więc można go przeczytać bez internetu.
 export function SavedProvider({ children }: { children: ReactNode }) {
-  const { isVip } = useVip();
   const [saved, setSaved] = useState<Article[]>([]);
 
   useEffect(() => {
@@ -51,13 +46,12 @@ export function SavedProvider({ children }: { children: ReactNode }) {
         remove(article.id);
         return 'removed' as const;
       }
-      if (!isVip && saved.length >= FREE_SAVED_LIMIT) return 'limit' as const;
       const next = [article, ...saved];
       setSaved(next);
       persist(next);
       return 'saved' as const;
     },
-    [saved, isVip, remove],
+    [saved, remove],
   );
 
   const value = useMemo<SavedState>(
